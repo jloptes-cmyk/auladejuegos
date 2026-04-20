@@ -1,0 +1,23 @@
+[
+  {
+    "titulo": "Lecto-Pistes",
+    "autor": "Javier L. Teso",
+    "asignatura": "Lengua",
+    "url": "https://tu-usuario.github.io/lecto-pistes",
+    "miniatura": "https://placehold.co/400x250/1e293b/7dd3fc?text=LECTO-PISTES"
+  },
+  {
+    "titulo": "Aventura Matemática",
+    "autor": "Profe Juan",
+    "asignatura": "Matemáticas",
+    "url": "https://juan.github.io/mates",
+    "miniatura": "https://placehold.co/400x250/1e293b/7dd3fc?text=MATEMÁTICAS"
+  },
+  {
+    "titulo": "Ortografía Ninja",
+    "autor": "Profe Lucía",
+    "asignatura": "Lengua",
+    "url": "https://lucia.github.io/orto",
+    "miniatura": "https://placehold.co/400x250/1e293b/7dd3fc?text=LENGUA"
+  }
+]

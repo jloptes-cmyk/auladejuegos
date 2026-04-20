@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula de Juegos</title>
+    <style>
+        :root {
+            /* Degradado más suave y vibrante */
+            --bg-degradado: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            --bg-tarjeta: rgba(30, 41, 59, 0.7); /* Transparente para que se vea el fondo */
+            --borde-tarjeta: #334155;
+            --texto-brillante: #7dd3fc;
+            --color-boton: #059669;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: var(--bg-degradado); 
+            background-attachment: fixed; /* Para que el fondo no se mueva al hacer scroll */
+            color: white;
+            margin: 0; 
+            padding: 40px 20px; 
+            min-height: 100vh;
+            text-align: center; 
+        }
+
+        h1 { 
+            font-size: 3.5em; 
+            margin-bottom: 0px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitulo {
+            color: #94a3b8;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+        }
+        
+        #galeria { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 25px; 
+            max-width: 1100px; 
+            margin: 0 auto; 
+        }
+
+        .tarjeta { 
+            background: var(--bg-tarjeta); 
+            border: 1px solid var(--borde-tarjeta);
+            border-radius: 16px; 
+            padding: 20px; 
+            backdrop-filter: blur(10px); /* Efecto cristal */
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .tarjeta:hover { 
+            transform: scale(1.03);
+            border-color: var(--texto-brillante);
+            box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+        }
+
+        .tarjeta img { 
+            width: 100%; 
+            border-radius: 10px; 
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+        
+        .tarjeta h3 { color: var(--texto-brillante); margin: 15px 0 5px; font-size: 1.5em; }
+        .tarjeta p { color: #cbd5e1; font-size: 0.9em; margin-bottom: 20px; }
+
+        .boton { 
+            display: block; 
+            background: var(--color-boton); 
+            color: white; 
+            text-decoration: none; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AULADEJUEGOS.ES</h1>
+    <p class="subtitulo">Selecciona tu misión y empieza a aprender</p>
+
+    <div id="galeria"></div>
+
+    <script>
+        // TRUCO: Asegúrate de que el archivo se llame exactamente juegos.json
+        fetch('juegos.json')
+            .then(res => {
+                if(!res.ok) throw new Error("No se encuentra el JSON");
+                return res.json();
+            })
+            .then(juegos => {
+                const galeria = document.getElementById('galeria');
+                juegos.forEach(juego => {
+                    galeria.innerHTML += `
+                        <div class="tarjeta">
+                            <img src="${juego.miniatura}">
+                            <h3>${juego.titulo}</h3>
+                            <p>Misión: ${juego.asignatura} | Por: ${juego.autor}</p>
+                            <a href="${juego.url}" class="boton" target="_blank">¡JUGAR!</a>
+                        </div>
+                    `;
+                });
+            })
+            .catch(err => {
+                document.getElementById('galeria').innerHTML = `<p style="color:#fb7185">Error: Asegúrate de que 'juegos.json' esté en la misma carpeta que este archivo.</p>`;
+            });
+    </script>
+</body>
+</html>
