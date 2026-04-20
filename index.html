@@ -23,34 +23,61 @@
             background-attachment: fixed;
             color: var(--blanco);
             margin: 0; 
-            padding: 20px; 
+            padding: 10px 20px; 
             min-height: 100vh;
         }
 
-        /* Cabecera: Logo a la izquierda y Botón a la derecha */
+        /* Cabecera unificada: Logo | Buscador | Botón */
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
-            max-width: 1400px;
+            padding: 20px 2%;
+            max-width: 1600px;
             margin: 0 auto;
+            gap: 20px;
         }
 
         .logo-principal {
-            max-width: 220px; /* Reducido un poco para que encaje mejor en la esquina */
+            max-width: 180px; /* Tamaño ajustado para la barra */
             height: auto;
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
         }
 
+        /* Estilo del Buscador ajustado para la cabecera */
+        .buscador-container {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-grow: 1;
+            max-width: 500px; /* Evita que crezca demasiado */
+            justify-content: center;
+        }
+
+        .buscador-container select {
+            background: #001a33;
+            color: white;
+            border: 1px solid var(--naranja);
+            padding: 8px 12px;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            width: 100%;
+        }
+
         .btn-enviar {
-            display: inline-block;
+            white-space: nowrap; /* Evita que el texto se rompa */
             border: 2px solid var(--naranja);
             color: var(--naranja);
-            padding: 10px 25px;
+            padding: 10px 20px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
+            font-size: 0.9em;
             transition: all 0.3s;
         }
 
@@ -59,38 +86,13 @@
             color: var(--azul-oscuro);
             transform: scale(1.05);
         }
-
-        /* Buscador centrado */
-        .buscador-container {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 15px;
-            max-width: 800px;
-            margin: 20px auto 40px;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .buscador-container select {
-            background: #001a33;
-            color: white;
-            border: 1px solid var(--naranja);
-            padding: 10px 15px;
-            border-radius: 8px;
-            outline: none;
-            cursor: pointer;
-            min-width: 180px;
-        }
         
         #galeria { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(300px, 350px)); 
             gap: 30px; 
             max-width: 1200px; 
-            margin: 0 auto; 
+            margin: 40px auto 0; 
             justify-content: center;
         }
 
@@ -138,12 +140,15 @@
 
         .boton:hover { background: var(--naranja-hover); color: white; }
 
-        /* Ajuste para móviles */
-        @media (max-width: 600px) {
+        /* Responsivo: Se apila en pantallas pequeñas */
+        @media (max-width: 850px) {
             .header-container {
                 flex-direction: column;
-                gap: 20px;
                 text-align: center;
+            }
+            .buscador-container {
+                width: 100%;
+                max-width: 100%;
             }
         }
     </style>
@@ -152,16 +157,17 @@
 
     <div class="header-container">
         <img src="auladejuegoslogo.png" alt="Aula de Juegos Logo" class="logo-principal">
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKjYpJG7aqgwj9SMhc9wKuxuaieokz27u_r1nzcjXfVqeowA/viewform?usp=sharing&ouid=105781798792806392011" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
-    </div>
 
-    <div class="buscador-container">
-        <select id="filtroAsignatura">
-            <option value="">Todas las Asignaturas</option>
-        </select>
-        <select id="filtroAutor">
-            <option value="">Todos los Autores</option>
-        </select>
+        <div class="buscador-container">
+            <select id="filtroAsignatura">
+                <option value="">Todas las Asignaturas</option>
+            </select>
+            <select id="filtroAutor">
+                <option value="">Todos los Autores</option>
+            </select>
+        </div>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKjYpJG7aqgwj9SMhc9wKuxuaieokz27u_r1nzcjXfVqeowA/viewform?usp=sharing&ouid=105781798792806392011" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
     </div>
 
     <div id="galeria">Cargando misiones...</div>
@@ -187,23 +193,17 @@
             const selectAsig = document.getElementById('filtroAsignatura');
             const selectAuto = document.getElementById('filtroAutor');
 
-            asignaturas.forEach(a => {
-                if(a) selectAsig.innerHTML += `<option value="${a}">${a}</option>`;
-            });
-            autores.forEach(a => {
-                if(a) selectAuto.innerHTML += `<option value="${a}">${a}</option>`;
-            });
+            asignaturas.forEach(a => { if(a) selectAsig.innerHTML += `<option value="${a}">${a}</option>`; });
+            autores.forEach(a => { if(a) selectAuto.innerHTML += `<option value="${a}">${a}</option>`; });
         }
 
         function mostrarJuegos(juegos) {
             const galeria = document.getElementById('galeria');
             galeria.innerHTML = '';
-
             if(juegos.length === 0) {
                 galeria.innerHTML = '<p>No se encontraron juegos con esos filtros.</p>';
                 return;
             }
-
             juegos.forEach(juego => {
                 const m = juego.miniatura || "https://placehold.co/400x250/002d56/f39200?text=JUEGO";
                 galeria.innerHTML += `
@@ -221,7 +221,6 @@
             select.addEventListener('change', () => {
                 const asigVal = document.getElementById('filtroAsignatura').value;
                 const autoVal = document.getElementById('filtroAutor').value;
-
                 const filtrados = datosJuegos.filter(j => {
                     return (asigVal === "" || j.asignatura === asigVal) &&
                            (autoVal === "" || j.autor === autoVal);
