@@ -7,95 +7,157 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
-            --bg-degradado: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
-            --bg-tarjeta: rgba(30, 41, 59, 0.7); 
-            --borde-tarjeta: #334155;
-            --texto-brillante: #7dd3fc;
-            --color-boton: #059669;
+            /* Colores extraídos del logo */
+            --azul-oscuro: #002d56;
+            --azul-claro: #005a9c;
+            --naranja: #f39200;
+            --naranja-hover: #d68100;
+            --blanco: #ffffff;
+            --bg-degradado: linear-gradient(135deg, #001a33 0%, #002d56 100%);
+            --bg-tarjeta: rgba(255, 255, 255, 0.05);
+            --borde-tarjeta: rgba(243, 146, 0, 0.3);
         }
 
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
             background: var(--bg-degradado); 
             background-attachment: fixed;
-            color: white;
+            color: var(--blanco);
             margin: 0; 
-            padding: 40px 20px; 
+            padding: 20px; 
             min-height: 100vh;
             text-align: center; 
         }
 
+        /* Contenedor del Logo */
+        .header-container {
+            margin-bottom: 30px;
+        }
+
+        .logo-principal {
+            max-width: 300px;
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+
         h1 { 
-            font-size: 3.5em; 
-            margin-bottom: 0px;
+            font-size: 2.5em; 
+            margin: 10px 0;
             text-transform: uppercase;
             letter-spacing: 2px;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--blanco);
         }
 
         .subtitulo {
-            color: #94a3b8;
-            font-size: 1.2em;
-            margin-bottom: 50px;
+            color: #cbd5e1;
+            font-size: 1.1em;
+            margin-bottom: 40px;
         }
         
         #galeria { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 25px; 
-            max-width: 1100px; 
+            /* Fichas con ancho fijo y centradas */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 350px)); 
+            gap: 30px; 
+            max-width: 1200px; 
             margin: 0 auto; 
+            justify-content: center;
         }
 
         .tarjeta { 
             background: var(--bg-tarjeta); 
             border: 1px solid var(--borde-tarjeta);
-            border-radius: 16px; 
+            border-radius: 20px; 
             padding: 20px; 
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             text-align: left;
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 420px; /* Altura fija para todas las tarjetas */
         }
 
         .tarjeta:hover { 
-            transform: scale(1.03);
-            border-color: var(--texto-brillante);
-            box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+            transform: translateY(-10px);
+            border-color: var(--naranja);
+            box-shadow: 0 10px 25px rgba(243, 146, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .tarjeta img { 
             width: 100%; 
-            border-radius: 10px; 
-            aspect-ratio: 16/9;
+            height: 180px; /* Formato apaisado fijo */
+            border-radius: 12px; 
             object-fit: cover;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
-        .tarjeta h3 { color: var(--texto-brillante); margin: 15px 0 5px; font-size: 1.5em; }
-        .tarjeta p { color: #cbd5e1; font-size: 0.9em; margin-bottom: 20px; }
+        .tarjeta h3 { 
+            color: var(--naranja); 
+            margin: 0 0 10px; 
+            font-size: 1.4em; 
+        }
+        
+        .tarjeta p { 
+            color: #e2e8f0; 
+            font-size: 0.95em; 
+            margin-bottom: 20px;
+            flex-grow: 1; /* Empuja el botón al final */
+            line-height: 1.4;
+        }
 
         .boton { 
             display: block; 
-            background: var(--color-boton); 
-            color: white; 
+            background: var(--naranja); 
+            color: var(--azul-oscuro); 
             text-decoration: none; 
-            padding: 12px; 
-            border-radius: 8px; 
+            padding: 14px; 
+            border-radius: 12px; 
             font-weight: bold; 
             text-align: center;
+            transition: background 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .boton:hover {
+            background: var(--naranja-hover);
+            color: var(--blanco);
+        }
+
+        /* Botón de envío superior */
+        .btn-enviar {
+            display: inline-block;
+            margin-bottom: 40px;
+            border: 2px solid var(--naranja);
+            color: var(--naranja);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-enviar:hover {
+            background: var(--naranja);
+            color: var(--azul-oscuro);
         }
     </style>
 </head>
 <body>
 
-    <h1>AULADEJUEGOS.ES</h1>
+    <div class="header-container">
+        <img src="auladejuegoslogo.jpg" alt="Aula de Juegos Logo" class="logo-principal">
+    </div>
+
     <p class="subtitulo">Selecciona tu misión y empieza a aprender</p>
+    
+    <a href="URL_DE_TU_FORMULARIO" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
 
     <div id="galeria">Cargando misiones...</div>
 
     <script>
-        // URL de tu Google Sheets publicado como CSV
         const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
 
         Papa.parse(public_url, {
@@ -104,24 +166,33 @@
             complete: function(results) {
                 const juegos = results.data;
                 const galeria = document.getElementById('galeria');
-                galeria.innerHTML = ''; // Limpiar mensaje de carga
+                galeria.innerHTML = ''; 
 
                 juegos.forEach(juego => {
-                    // Solo creamos la tarjeta si la fila tiene datos (evita filas vacías)
-                    if(juego.titulo && juego.titulo.trim() !== "") {
+                    // Normalización de campos
+                    const t = juego.titulo || juego.Titulo || "";
+                    const a = juego.autor || juego.Autor || "";
+                    const asig = juego.asignatura || juego.Asignatura || "";
+                    const u = juego.url || juego.URL || "";
+                    const m = juego.miniatura || juego.Miniatura || "https://placehold.co/400x250/002d56/f39200?text=AULA+DE+JUEGOS";
+
+                    if(t.trim() !== "") {
                         galeria.innerHTML += `
                             <div class="tarjeta">
-                                <img src="${juego.miniatura}" alt="${juego.titulo}">
-                                <h3>${juego.titulo}</h3>
-                                <p>Misión: ${juego.asignatura} | Por: ${juego.autor}</p>
-                                <a href="${juego.url}" class="boton" target="_blank">¡JUGAR!</a>
+                                <img src="${m}" alt="${t}">
+                                <h3>${t}</h3>
+                                <p>
+                                    <strong>Asignatura:</strong> ${asig}<br>
+                                    <strong>Creado por:</strong> ${a}
+                                </p>
+                                <a href="${u}" class="boton" target="_blank">¡JUGAR AHORA!</a>
                             </div>
                         `;
                     }
                 });
             },
             error: function(err) {
-                document.getElementById('galeria').innerHTML = `<p style="color:#fb7185">Error: No se pudo cargar el repositorio de juegos.</p>`;
+                document.getElementById('galeria').innerHTML = `<p style="color:#f39200">Error: No se pudo conectar con el repositorio.</p>`;
             }
         });
     </script>
