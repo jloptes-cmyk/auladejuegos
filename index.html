@@ -8,30 +8,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
+            --azul-oscuro: #001a33;
+            --azul-profundo: #000d1a;
             --naranja: #f39200;
             --naranja-hover: #d68100;
             --blanco: #ffffff;
-            --gris-claro: #f8f9fa;
-            --texto-oscuro: #1a1a1a;
-            --texto-secundario: #4a5568;
-            --bg-tarjeta: #ffffff;
-            --borde-tarjeta: rgba(243, 146, 0, 0.2);
+            /* RESTAURADO: El degradado radial original */
+            --bg-degradado: radial-gradient(circle at center, #002d56 0%, #000d1a 100%);
+            --bg-tarjeta: rgba(255, 255, 255, 0.05);
+            --borde-tarjeta: rgba(243, 146, 0, 0.15);
         }
 
         body { 
             font-family: 'Poppins', sans-serif; 
-            background-color: var(--blanco); /* Fondo cambiado a blanco */
-            color: var(--texto-oscuro);
+            background: var(--bg-degradado); 
+            background-attachment: fixed;
+            color: var(--blanco);
             margin: 0; 
             padding: 10px 20px; 
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Cabecera ajustada sin el botón */
+        /* Cabecera sin botón */
         .header-container {
             display: flex;
-            justify-content: flex-start; /* Alinea todo a la izquierda */
+            justify-content: flex-start;
             align-items: center;
             padding: 30px 2%;
             max-width: 1600px;
@@ -42,6 +44,7 @@
         .logo-principal {
             max-width: 280px;
             height: auto;
+            filter: drop-shadow(0 0 12px rgba(243, 146, 0, 0.3));
             transition: transform 0.3s ease;
         }
 
@@ -56,16 +59,16 @@
         .buscador-container {
             display: flex;
             gap: 12px;
-            background: var(--gris-claro);
+            background: rgba(0, 0, 0, 0.4);
             padding: 10px 15px;
             border-radius: 14px;
-            border: 1px solid rgba(0,0,0,0.1);
-            width: 100%;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
         }
 
         .buscador-container select {
-            background: white;
-            color: var(--texto-oscuro);
+            background: var(--azul-oscuro);
+            color: white;
             border: 1px solid var(--naranja);
             padding: 8px 12px;
             border-radius: 8px;
@@ -83,7 +86,7 @@
             letter-spacing: 1px;
         }
         
-        /* Tarjetas adaptadas al fondo blanco */
+        /* Galería y Tarjetas */
         #galeria { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(320px, 360px)); 
@@ -98,7 +101,7 @@
             border: 1px solid var(--borde-tarjeta);
             border-radius: 24px; 
             padding: 18px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            backdrop-filter: blur(15px);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
@@ -106,9 +109,9 @@
         }
 
         .tarjeta:hover { 
-            transform: translateY(-10px);
+            transform: translateY(-12px);
             border-color: var(--naranja);
-            box-shadow: 0 12px 30px rgba(243, 146, 0, 0.15);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(243, 146, 0, 0.15);
         }
 
         .tarjeta img { 
@@ -127,17 +130,17 @@
         }
 
         .tarjeta p { 
-            color: var(--texto-secundario); 
+            color: #cbd5e1; 
             font-size: 0.9em; 
             flex-grow: 1; 
             line-height: 1.5;
         }
 
-        .tarjeta p strong { color: var(--texto-oscuro); }
+        .tarjeta p strong { color: var(--blanco); }
 
         .boton { 
             background: var(--naranja); 
-            color: white; 
+            color: var(--azul-oscuro); 
             text-decoration: none; 
             padding: 14px; 
             border-radius: 12px; 
@@ -148,7 +151,7 @@
             transition: 0.3s;
         }
 
-        .boton:hover { background: var(--naranja-hover); box-shadow: 0 4px 12px rgba(243, 146, 0, 0.3); }
+        .boton:hover { background: white; color: var(--azul-profundo); box-shadow: 0 0 15px white; }
 
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -158,7 +161,7 @@
         .tarjeta-animada { animation: fadeInUp 0.5s ease forwards; }
 
         @media (max-width: 800px) {
-            .header-container { flex-direction: column; gap: 20px; }
+            .header-container { flex-direction: column; text-align: center; }
             .buscador-wrapper { width: 100%; }
         }
     </style>
@@ -167,7 +170,6 @@
 
     <div class="header-container">
         <img src="auladejuegoslogo.png" alt="Aula de Juegos Logo" class="logo-principal">
-        
         <div class="buscador-wrapper">
             <div id="contador" class="contador-juegos">Cargando misiones...</div>
             <div class="buscador-container">
@@ -216,7 +218,7 @@
             galeria.innerHTML = '';
             
             juegos.forEach((juego, index) => {
-                const m = juego.miniatura || "https://placehold.co/400x250/f8f9fa/f39200?text=JUEGO";
+                const m = juego.miniatura || "https://placehold.co/400x250/002d56/f39200?text=JUEGO";
                 const n = juego.nivel || "No especificado"; 
                 
                 const card = document.createElement('div');
