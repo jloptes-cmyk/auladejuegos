@@ -7,15 +7,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
-            /* Colores extraídos del logo */
-            --azul-oscuro: #002d56;
-            --azul-claro: #005a9c;
+            --azul-oscuro: #001a33;
+            --azul-profundo: #000d1a;
             --naranja: #f39200;
             --naranja-hover: #d68100;
             --blanco: #ffffff;
-            --bg-degradado: linear-gradient(135deg, #001a33 0%, #002d56 100%);
-            --bg-tarjeta: rgba(255, 255, 255, 0.05);
-            --borde-tarjeta: rgba(243, 146, 0, 0.3);
+            /* Fondo mejorado con degradado radial para resaltar el centro */
+            --bg-degradado: radial-gradient(circle at center, #002d56 0%, #000d1a 100%);
+            --bg-tarjeta: rgba(255, 255, 255, 0.07);
+            --borde-tarjeta: rgba(243, 146, 0, 0.2);
         }
 
         body { 
@@ -29,34 +29,62 @@
             text-align: center; 
         }
 
-        /* Contenedor del Logo */
+        /* Contenedor del Logo con iluminación */
         .header-container {
-            margin-bottom: 30px;
+            padding: 30px 0;
         }
 
         .logo-principal {
-            max-width: 300px;
+            max-width: 280px;
             height: auto;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+            /* Efecto para resaltar el logo sobre el fondo oscuro */
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
         }
 
-        h1 { 
-            font-size: 2.5em; 
-            margin: 10px 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--blanco);
+        /* Sección de Buscador */
+        .buscador-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .subtitulo {
-            color: #cbd5e1;
-            font-size: 1.1em;
-            margin-bottom: 40px;
+        .buscador-container select {
+            background: #001a33;
+            color: white;
+            border: 1px solid var(--naranja);
+            padding: 10px 15px;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .btn-enviar {
+            display: inline-block;
+            margin-bottom: 30px;
+            border: 2px solid var(--naranja);
+            color: var(--naranja);
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-enviar:hover {
+            background: var(--naranja);
+            color: var(--azul-oscuro);
         }
         
         #galeria { 
             display: grid; 
-            /* Fichas con ancho fijo y centradas */
             grid-template-columns: repeat(auto-fit, minmax(300px, 350px)); 
             gap: 30px; 
             max-width: 1200px; 
@@ -69,46 +97,33 @@
             border: 1px solid var(--borde-tarjeta);
             border-radius: 20px; 
             padding: 20px; 
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             text-align: left;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             display: flex;
             flex-direction: column;
-            height: 420px; /* Altura fija para todas las tarjetas */
+            height: 420px;
         }
 
         .tarjeta:hover { 
             transform: translateY(-10px);
             border-color: var(--naranja);
-            box-shadow: 0 10px 25px rgba(243, 146, 0, 0.2);
-            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: rgba(255, 255, 255, 0.12);
         }
 
         .tarjeta img { 
             width: 100%; 
-            height: 180px; /* Formato apaisado fijo */
+            height: 180px; 
             border-radius: 12px; 
             object-fit: cover;
             margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
         }
         
-        .tarjeta h3 { 
-            color: var(--naranja); 
-            margin: 0 0 10px; 
-            font-size: 1.4em; 
-        }
-        
-        .tarjeta p { 
-            color: #e2e8f0; 
-            font-size: 0.95em; 
-            margin-bottom: 20px;
-            flex-grow: 1; /* Empuja el botón al final */
-            line-height: 1.4;
-        }
+        .tarjeta h3 { color: var(--naranja); margin: 0 0 10px; font-size: 1.4em; }
+        .tarjeta p { color: #cbd5e1; font-size: 0.95em; flex-grow: 1; line-height: 1.5; }
 
         .boton { 
-            display: block; 
             background: var(--naranja); 
             color: var(--azul-oscuro); 
             text-decoration: none; 
@@ -116,33 +131,10 @@
             border-radius: 12px; 
             font-weight: bold; 
             text-align: center;
-            transition: background 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: 0.3s;
         }
 
-        .boton:hover {
-            background: var(--naranja-hover);
-            color: var(--blanco);
-        }
-
-        /* Botón de envío superior */
-        .btn-enviar {
-            display: inline-block;
-            margin-bottom: 40px;
-            border: 2px solid var(--naranja);
-            color: var(--naranja);
-            padding: 10px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .btn-enviar:hover {
-            background: var(--naranja);
-            color: var(--azul-oscuro);
-        }
+        .boton:hover { background: var(--naranja-hover); color: white; }
     </style>
 </head>
 <body>
@@ -151,49 +143,73 @@
         <img src="auladejuegoslogo.png" alt="Aula de Juegos Logo" class="logo-principal">
     </div>
 
-    <p class="subtitulo">Selecciona tu misión y empieza a aprender</p>
-    
     <a href="URL_DE_TU_FORMULARIO" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
+
+    <div class="buscador-container">
+        <select id="filtroAsignatura">
+            <option value="">Todas las Asignaturas</option>
+        </select>
+        <select id="filtroAutor">
+            <option value="">Todos los Autores</option>
+        </select>
+    </div>
 
     <div id="galeria">Cargando misiones...</div>
 
     <script>
         const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
+        let datosJuegos = [];
 
         Papa.parse(public_url, {
             download: true,
             header: true,
             complete: function(results) {
-                const juegos = results.data;
-                const galeria = document.getElementById('galeria');
-                galeria.innerHTML = ''; 
-
-                juegos.forEach(juego => {
-                    // Normalización de campos
-                    const t = juego.titulo || juego.Titulo || "";
-                    const a = juego.autor || juego.Autor || "";
-                    const asig = juego.asignatura || juego.Asignatura || "";
-                    const u = juego.url || juego.URL || "";
-                    const m = juego.miniatura || juego.Miniatura || "https://placehold.co/400x250/002d56/f39200?text=AULA+DE+JUEGOS";
-
-                    if(t.trim() !== "") {
-                        galeria.innerHTML += `
-                            <div class="tarjeta">
-                                <img src="${m}" alt="${t}">
-                                <h3>${t}</h3>
-                                <p>
-                                    <strong>Asignatura:</strong> ${asig}<br>
-                                    <strong>Creado por:</strong> ${a}
-                                </p>
-                                <a href="${u}" class="boton" target="_blank">¡JUGAR AHORA!</a>
-                            </div>
-                        `;
-                    }
-                });
-            },
-            error: function(err) {
-                document.getElementById('galeria').innerHTML = `<p style="color:#f39200">Error: No se pudo conectar con el repositorio.</p>`;
+                datosJuegos = results.data.filter(j => j.titulo && j.titulo.trim() !== "");
+                poblarFiltros(datosJuegos);
+                mostrarJuegos(datosJuegos);
             }
+        });
+
+        function poblarFiltros(juegos) {
+            const asignaturas = [...new Set(juegos.map(j => j.asignatura))].sort();
+            const autores = [...new Set(juegos.map(j => j.autor))].sort();
+            
+            const selectAsig = document.getElementById('filtroAsignatura');
+            const selectAuto = document.getElementById('filtroAutor');
+
+            asignaturas.forEach(a => selectAsig.innerHTML += `<option value="${a}">${a}</option>`);
+            autores.forEach(a => selectAuto.innerHTML += `<option value="${a}">${a}</option>`);
+        }
+
+        function mostrarJuegos(juegos) {
+            const galeria = document.getElementById('galeria');
+            galeria.innerHTML = '';
+
+            juegos.forEach(juego => {
+                const m = juego.miniatura || "https://placehold.co/400x250/002d56/f39200?text=JUEGO";
+                galeria.innerHTML += `
+                    <div class="tarjeta">
+                        <img src="${m}" alt="${juego.titulo}">
+                        <h3>${juego.titulo}</h3>
+                        <p><strong>Asignatura:</strong> ${juego.asignatura}<br><strong>Por:</strong> ${juego.autor}</p>
+                        <a href="${juego.url}" class="boton" target="_blank">¡JUGAR AHORA!</a>
+                    </div>
+                `;
+            });
+        }
+
+        // Lógica de filtrado
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', () => {
+                const asigVal = document.getElementById('filtroAsignatura').value;
+                const autoVal = document.getElementById('filtroAutor').value;
+
+                const filtrados = datosJuegos.filter(j => {
+                    return (asigVal === "" || j.asignatura === asigVal) &&
+                           (autoVal === "" || j.autor === autoVal);
+                });
+                mostrarJuegos(filtrados);
+            });
         });
     </script>
 </body>
