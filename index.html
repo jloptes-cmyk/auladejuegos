@@ -12,7 +12,6 @@
             --naranja: #f39200;
             --naranja-hover: #d68100;
             --blanco: #ffffff;
-            /* Fondo mejorado con degradado radial para resaltar el centro */
             --bg-degradado: radial-gradient(circle at center, #002d56 0%, #000d1a 100%);
             --bg-tarjeta: rgba(255, 255, 255, 0.07);
             --borde-tarjeta: rgba(243, 146, 0, 0.2);
@@ -26,28 +25,48 @@
             margin: 0; 
             padding: 20px; 
             min-height: 100vh;
-            text-align: center; 
         }
 
-        /* Contenedor del Logo con iluminación */
+        /* Cabecera: Logo a la izquierda y Botón a la derecha */
         .header-container {
-            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .logo-principal {
-            max-width: 280px;
+            max-width: 220px; /* Reducido un poco para que encaje mejor en la esquina */
             height: auto;
-            /* Efecto para resaltar el logo sobre el fondo oscuro */
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
         }
 
-        /* Sección de Buscador */
+        .btn-enviar {
+            display: inline-block;
+            border: 2px solid var(--naranja);
+            color: var(--naranja);
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-enviar:hover {
+            background: var(--naranja);
+            color: var(--azul-oscuro);
+            transform: scale(1.05);
+        }
+
+        /* Buscador centrado */
         .buscador-container {
             background: rgba(0, 0, 0, 0.3);
             padding: 20px;
             border-radius: 15px;
             max-width: 800px;
-            margin: 0 auto 40px;
+            margin: 20px auto 40px;
             display: flex;
             gap: 15px;
             justify-content: center;
@@ -64,23 +83,6 @@
             outline: none;
             cursor: pointer;
             min-width: 180px;
-        }
-
-        .btn-enviar {
-            display: inline-block;
-            margin-bottom: 30px;
-            border: 2px solid var(--naranja);
-            color: var(--naranja);
-            padding: 10px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .btn-enviar:hover {
-            background: var(--naranja);
-            color: var(--azul-oscuro);
         }
         
         #galeria { 
@@ -135,15 +137,23 @@
         }
 
         .boton:hover { background: var(--naranja-hover); color: white; }
+
+        /* Ajuste para móviles */
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="header-container">
         <img src="auladejuegoslogo.png" alt="Aula de Juegos Logo" class="logo-principal">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKjYpJG7aqgwj9SMhc9wKuxuaieokz27u_r1nzcjXfVqeowA/viewform?usp=sharing&ouid=105781798792806392011" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
     </div>
-
-    <a href="URL_DE_TU_FORMULARIO" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
 
     <div class="buscador-container">
         <select id="filtroAsignatura">
@@ -177,13 +187,22 @@
             const selectAsig = document.getElementById('filtroAsignatura');
             const selectAuto = document.getElementById('filtroAutor');
 
-            asignaturas.forEach(a => selectAsig.innerHTML += `<option value="${a}">${a}</option>`);
-            autores.forEach(a => selectAuto.innerHTML += `<option value="${a}">${a}</option>`);
+            asignaturas.forEach(a => {
+                if(a) selectAsig.innerHTML += `<option value="${a}">${a}</option>`;
+            });
+            autores.forEach(a => {
+                if(a) selectAuto.innerHTML += `<option value="${a}">${a}</option>`;
+            });
         }
 
         function mostrarJuegos(juegos) {
             const galeria = document.getElementById('galeria');
             galeria.innerHTML = '';
+
+            if(juegos.length === 0) {
+                galeria.innerHTML = '<p>No se encontraron juegos con esos filtros.</p>';
+                return;
+            }
 
             juegos.forEach(juego => {
                 const m = juego.miniatura || "https://placehold.co/400x250/002d56/f39200?text=JUEGO";
@@ -198,7 +217,6 @@
             });
         }
 
-        // Lógica de filtrado
         document.querySelectorAll('select').forEach(select => {
             select.addEventListener('change', () => {
                 const asigVal = document.getElementById('filtroAsignatura').value;
