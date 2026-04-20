@@ -8,76 +8,67 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
-            --azul-oscuro: #001a33;
-            --azul-profundo: #000d1a;
             --naranja: #f39200;
             --naranja-hover: #d68100;
             --blanco: #ffffff;
-            --bg-degradado: radial-gradient(circle at center, #002d56 0%, #000d1a 100%);
-            --bg-tarjeta: rgba(255, 255, 255, 0.05);
-            --borde-tarjeta: rgba(243, 146, 0, 0.15);
+            --gris-claro: #f8f9fa;
+            --texto-oscuro: #1a1a1a;
+            --texto-secundario: #4a5568;
+            --bg-tarjeta: #ffffff;
+            --borde-tarjeta: rgba(243, 146, 0, 0.2);
         }
 
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: var(--bg-degradado); 
-            background-attachment: fixed;
-            color: var(--blanco);
+            background-color: var(--blanco); /* Fondo cambiado a blanco */
+            color: var(--texto-oscuro);
             margin: 0; 
             padding: 10px 20px; 
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Cabecera */
+        /* Cabecera ajustada sin el botón */
         .header-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* Alinea todo a la izquierda */
             align-items: center;
             padding: 30px 2%;
             max-width: 1600px;
             margin: 0 auto;
-            gap: 20px;
+            gap: 40px;
         }
 
         .logo-principal {
             max-width: 280px;
             height: auto;
-            filter: drop-shadow(0 0 12px rgba(243, 146, 0, 0.3));
             transition: transform 0.3s ease;
         }
 
-        .logo-principal:hover {
-            transform: scale(1.02);
-        }
-
-        /* Buscador */
         .buscador-wrapper {
             flex-grow: 1;
-            max-width: 600px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .buscador-container {
             display: flex;
             gap: 12px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 12px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--gris-claro);
+            padding: 10px 15px;
+            border-radius: 14px;
+            border: 1px solid rgba(0,0,0,0.1);
             width: 100%;
-            backdrop-filter: blur(10px);
         }
 
         .buscador-container select {
-            background: var(--azul-oscuro);
-            color: white;
+            background: white;
+            color: var(--texto-oscuro);
             border: 1px solid var(--naranja);
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
             outline: none;
             cursor: pointer;
             font-size: 0.9em;
@@ -85,44 +76,20 @@
         }
 
         .contador-juegos {
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: var(--naranja);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Botón Proponer Juego 
-        .btn-enviar {
-            white-space: nowrap;
-            border: 2px solid var(--naranja);
-            color: var(--naranja);
-            padding: 12px 28px;
-            border-radius: 50px;
-            text-decoration: none;
             font-weight: 700;
-            font-size: 0.9em;
-            font-family: 'Orbitron', sans-serif;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-        */
-
-        .btn-enviar:hover {
-            background: var(--naranja);
-            color: var(--azul-oscuro);
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(243, 146, 0, 0.4);
         }
         
-        /* Galería y Tarjetas */
+        /* Tarjetas adaptadas al fondo blanco */
         #galeria { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(320px, 360px)); 
             gap: 35px; 
             max-width: 1300px; 
-            margin: 50px auto; 
+            margin: 40px auto; 
             justify-content: center;
         }
 
@@ -131,17 +98,17 @@
             border: 1px solid var(--borde-tarjeta);
             border-radius: 24px; 
             padding: 18px; 
-            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
-            height: 460px; /* Aumentado ligeramente para el nuevo campo */
+            height: 460px;
         }
 
         .tarjeta:hover { 
-            transform: translateY(-12px);
+            transform: translateY(-10px);
             border-color: var(--naranja);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(243, 146, 0, 0.15);
+            box-shadow: 0 12px 30px rgba(243, 146, 0, 0.15);
         }
 
         .tarjeta img { 
@@ -154,47 +121,45 @@
         
         .tarjeta h3 { 
             color: var(--naranja); 
-            margin: 0 0 12px; 
-            font-size: 1.5em; 
+            margin: 0 0 10px; 
+            font-size: 1.4em; 
             font-family: 'Orbitron', sans-serif;
         }
 
         .tarjeta p { 
-            color: #cbd5e1; 
+            color: var(--texto-secundario); 
             font-size: 0.9em; 
             flex-grow: 1; 
             line-height: 1.5;
-            margin-bottom: 15px;
         }
 
-        .tarjeta p strong {
-            color: var(--blanco);
-        }
+        .tarjeta p strong { color: var(--texto-oscuro); }
 
         .boton { 
             background: var(--naranja); 
-            color: var(--azul-oscuro); 
+            color: white; 
             text-decoration: none; 
-            padding: 15px; 
-            border-radius: 14px; 
+            padding: 14px; 
+            border-radius: 12px; 
             font-weight: 800; 
             text-align: center;
             font-family: 'Orbitron', sans-serif;
             text-transform: uppercase;
+            transition: 0.3s;
         }
 
+        .boton:hover { background: var(--naranja-hover); box-shadow: 0 4px 12px rgba(243, 146, 0, 0.3); }
+
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .tarjeta-animada {
-            animation: fadeInUp 0.6s ease forwards;
-        }
+        .tarjeta-animada { animation: fadeInUp 0.5s ease forwards; }
 
-        @media (max-width: 900px) {
-            .header-container { flex-direction: column; }
-            .logo-principal { max-width: 220px; }
+        @media (max-width: 800px) {
+            .header-container { flex-direction: column; gap: 20px; }
+            .buscador-wrapper { width: 100%; }
         }
     </style>
 </head>
@@ -202,8 +167,9 @@
 
     <div class="header-container">
         <img src="auladejuegoslogo.png" alt="Aula de Juegos Logo" class="logo-principal">
+        
         <div class="buscador-wrapper">
-            <div id="contador" class="contador-juegos">Cargando arsenal...</div>
+            <div id="contador" class="contador-juegos">Cargando misiones...</div>
             <div class="buscador-container">
                 <select id="filtroAsignatura">
                     <option value="">Todas las Asignaturas</option>
@@ -213,7 +179,6 @@
                 </select>
             </div>
         </div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKjYpJG7aqgwj9SMhc9wKuxuaieokz27u_r1nzcjXfVqeowA/viewform?usp=sharing&ouid=105781798792806392011" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
     </div>
 
     <div id="galeria">Preparando misiones...</div>
@@ -234,7 +199,7 @@
         });
 
         function actualizarContador(num) {
-            document.getElementById('contador').innerText = `Explorando ${num} misiones disponibles`;
+            document.getElementById('contador').innerText = `${num} misiones disponibles`;
         }
 
         function poblarFiltros(juegos) {
@@ -251,13 +216,12 @@
             galeria.innerHTML = '';
             
             juegos.forEach((juego, index) => {
-                const m = juego.miniatura || "https://placehold.co/400x250/002d56/f39200?text=JUEGO";
-                // IMPORTANTE: Asegúrate de que en tu Excel la columna se llame exactamente "nivel"
+                const m = juego.miniatura || "https://placehold.co/400x250/f8f9fa/f39200?text=JUEGO";
                 const n = juego.nivel || "No especificado"; 
                 
                 const card = document.createElement('div');
                 card.className = 'tarjeta tarjeta-animada';
-                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animationDelay = `${index * 0.05}s`;
                 
                 card.innerHTML = `
                     <img src="${m}" alt="${juego.titulo}">
@@ -267,7 +231,7 @@
                         <strong>🎮 NIVEL:</strong> ${n}<br>
                         <strong>✏️ AUTOR:</strong> ${juego.autor}
                     </p>
-                    <a href="${juego.url}" class="boton" target="_blank">¡JUGAR AHORA!</a>
+                    <a href="${juego.url}" class="boton" target="_blank">¡JUGAR!</a>
                 `;
                 galeria.appendChild(card);
             });
