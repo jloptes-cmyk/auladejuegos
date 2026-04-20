@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aula de Juegos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
-            /* Degradado más suave y vibrante */
             --bg-degradado: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
-            --bg-tarjeta: rgba(30, 41, 59, 0.7); /* Transparente para que se vea el fondo */
+            --bg-tarjeta: rgba(30, 41, 59, 0.7); 
             --borde-tarjeta: #334155;
             --texto-brillante: #7dd3fc;
             --color-boton: #059669;
@@ -17,7 +17,7 @@
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
             background: var(--bg-degradado); 
-            background-attachment: fixed; /* Para que el fondo no se mueva al hacer scroll */
+            background-attachment: fixed;
             color: white;
             margin: 0; 
             padding: 40px 20px; 
@@ -54,7 +54,7 @@
             border: 1px solid var(--borde-tarjeta);
             border-radius: 16px; 
             padding: 20px; 
-            backdrop-filter: blur(10px); /* Efecto cristal */
+            backdrop-filter: blur(10px);
             text-align: left;
             transition: all 0.3s ease;
         }
@@ -92,31 +92,38 @@
     <h1>AULADEJUEGOS.ES</h1>
     <p class="subtitulo">Selecciona tu misión y empieza a aprender</p>
 
-    <div id="galeria"></div>
+    <div id="galeria">Cargando misiones...</div>
 
     <script>
-        // TRUCO: Asegúrate de que el archivo se llame exactamente juegos.json
-        fetch('juegos.json')
-            .then(res => {
-                if(!res.ok) throw new Error("No se encuentra el JSON");
-                return res.json();
-            })
-            .then(juegos => {
+        // URL de tu Google Sheets publicado como CSV
+        const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
+
+        Papa.parse(public_url, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const juegos = results.data;
                 const galeria = document.getElementById('galeria');
+                galeria.innerHTML = ''; // Limpiar mensaje de carga
+
                 juegos.forEach(juego => {
-                    galeria.innerHTML += `
-                        <div class="tarjeta">
-                            <img src="${juego.miniatura}">
-                            <h3>${juego.titulo}</h3>
-                            <p>Misión: ${juego.asignatura} | Por: ${juego.autor}</p>
-                            <a href="${juego.url}" class="boton" target="_blank">¡JUGAR!</a>
-                        </div>
-                    `;
+                    // Solo creamos la tarjeta si la fila tiene datos (evita filas vacías)
+                    if(juego.titulo && juego.titulo.trim() !== "") {
+                        galeria.innerHTML += `
+                            <div class="tarjeta">
+                                <img src="${juego.miniatura}" alt="${juego.titulo}">
+                                <h3>${juego.titulo}</h3>
+                                <p>Misión: ${juego.asignatura} | Por: ${juego.autor}</p>
+                                <a href="${juego.url}" class="boton" target="_blank">¡JUGAR!</a>
+                            </div>
+                        `;
+                    }
                 });
-            })
-            .catch(err => {
-                document.getElementById('galeria').innerHTML = `<p style="color:#fb7185">Error: Asegúrate de que 'juegos.json' esté en la misma carpeta que este archivo.</p>`;
-            });
+            },
+            error: function(err) {
+                document.getElementById('galeria').innerHTML = `<p style="color:#fb7185">Error: No se pudo cargar el repositorio de juegos.</p>`;
+            }
+        });
     </script>
 </body>
 </html>
