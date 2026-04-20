@@ -13,7 +13,6 @@
             --naranja: #f39200;
             --naranja-hover: #d68100;
             --blanco: #ffffff;
-            /* RESTAURADO: El degradado radial original */
             --bg-degradado: radial-gradient(circle at center, #002d56 0%, #000d1a 100%);
             --bg-tarjeta: rgba(255, 255, 255, 0.05);
             --borde-tarjeta: rgba(243, 146, 0, 0.15);
@@ -30,7 +29,7 @@
             overflow-x: hidden;
         }
 
-        /* Cabecera sin botón */
+        /* Cabecera */
         .header-container {
             display: flex;
             justify-content: flex-start;
@@ -45,12 +44,11 @@
             max-width: 280px;
             height: auto;
             filter: drop-shadow(0 0 12px rgba(243, 146, 0, 0.3));
-            transition: transform 0.3s ease;
         }
 
         .buscador-wrapper {
             flex-grow: 1;
-            max-width: 500px;
+            max-width: 700px; /* Un poco más ancho para albergar 3 filtros */
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -58,7 +56,7 @@
 
         .buscador-container {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             background: rgba(0, 0, 0, 0.4);
             padding: 10px 15px;
             border-radius: 14px;
@@ -74,8 +72,13 @@
             border-radius: 8px;
             outline: none;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 0.85em;
             width: 100%;
+            transition: 0.3s;
+        }
+
+        .buscador-container select:hover {
+            border-color: white;
         }
 
         .contador-juegos {
@@ -86,7 +89,7 @@
             letter-spacing: 1px;
         }
         
-        /* Galería y Tarjetas */
+        /* Galería */
         #galeria { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(320px, 360px)); 
@@ -160,9 +163,10 @@
 
         .tarjeta-animada { animation: fadeInUp 0.5s ease forwards; }
 
-        @media (max-width: 800px) {
+        @media (max-width: 950px) {
             .header-container { flex-direction: column; text-align: center; }
-            .buscador-wrapper { width: 100%; }
+            .buscador-container { flex-direction: column; width: 100%; }
+            .buscador-wrapper { width: 100%; max-width: 100%; }
         }
     </style>
 </head>
@@ -175,6 +179,9 @@
             <div class="buscador-container">
                 <select id="filtroAsignatura">
                     <option value="">Todas las Asignaturas</option>
+                </select>
+                <select id="filtroNivel">
+                    <option value="">Todos los Niveles</option>
                 </select>
                 <select id="filtroAutor">
                     <option value="">Todos los Autores</option>
@@ -206,10 +213,15 @@
 
         function poblarFiltros(juegos) {
             const asignaturas = [...new Set(juegos.map(j => j.asignatura))].sort();
+            const niveles = [...new Set(juegos.map(j => j.nivel))].sort();
             const autores = [...new Set(juegos.map(j => j.autor))].sort();
+
             const selectAsig = document.getElementById('filtroAsignatura');
+            const selectNivel = document.getElementById('filtroNivel');
             const selectAuto = document.getElementById('filtroAutor');
+
             asignaturas.forEach(a => { if(a) selectAsig.innerHTML += `<option value="${a}">${a}</option>`; });
+            niveles.forEach(n => { if(n) selectNivel.innerHTML += `<option value="${n}">${n}</option>`; });
             autores.forEach(a => { if(a) selectAuto.innerHTML += `<option value="${a}">${a}</option>`; });
         }
 
@@ -239,12 +251,16 @@
             });
         }
 
+        // Lógica de filtrado combinando los 3 selectores
         document.querySelectorAll('select').forEach(select => {
             select.addEventListener('change', () => {
                 const asigVal = document.getElementById('filtroAsignatura').value;
+                const nivelVal = document.getElementById('filtroNivel').value;
                 const autoVal = document.getElementById('filtroAutor').value;
+
                 const filtrados = datosJuegos.filter(j => {
                     return (asigVal === "" || j.asignatura === asigVal) &&
+                           (nivelVal === "" || j.nivel === nivelVal) &&
                            (autoVal === "" || j.autor === autoVal);
                 });
                 mostrarJuegos(filtrados);
