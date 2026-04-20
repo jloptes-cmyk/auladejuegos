@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aula de Juegos</title>
+    <title>Aula de Juegos | Misiones Educativas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
@@ -13,142 +14,225 @@
             --naranja-hover: #d68100;
             --blanco: #ffffff;
             --bg-degradado: radial-gradient(circle at center, #002d56 0%, #000d1a 100%);
-            --bg-tarjeta: rgba(255, 255, 255, 0.07);
-            --borde-tarjeta: rgba(243, 146, 0, 0.2);
+            --bg-tarjeta: rgba(255, 255, 255, 0.05);
+            --borde-tarjeta: rgba(243, 146, 0, 0.15);
         }
 
         body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
+            font-family: 'Poppins', sans-serif; 
             background: var(--bg-degradado); 
             background-attachment: fixed;
             color: var(--blanco);
             margin: 0; 
             padding: 10px 20px; 
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Cabecera unificada: Logo | Buscador | Botón */
+        /* Cabecera Mejorada */
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 2%;
+            padding: 30px 2%;
             max-width: 1600px;
             margin: 0 auto;
             gap: 20px;
         }
 
         .logo-principal {
-            max-width: 250px; /* Tamaño ajustado para la barra */
+            max-width: 280px; /* Logo más grande como pediste */
             height: auto;
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
+            /* Efecto de brillo naranja para resaltar sobre el fondo oscuro */
+            filter: drop-shadow(0 0 12px rgba(243, 146, 0, 0.3));
+            transition: transform 0.3s ease;
         }
 
-        /* Estilo del Buscador ajustado para la cabecera */
+        .logo-principal:hover {
+            transform: scale(1.02);
+        }
+
+        /* Buscador Modernizado */
+        .buscador-wrapper {
+            flex-grow: 1;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
         .buscador-container {
             display: flex;
-            gap: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px 15px;
-            border-radius: 12px;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 20px;
+            border-radius: 16px;
             border: 1px solid rgba(255,255,255,0.1);
-            flex-grow: 1;
-            max-width: 500px; /* Evita que crezca demasiado */
-            justify-content: center;
+            width: 100%;
+            backdrop-filter: blur(10px);
         }
 
         .buscador-container select {
-            background: #001a33;
+            background: var(--azul-oscuro);
             color: white;
             border: 1px solid var(--naranja);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 15px;
+            border-radius: 10px;
             outline: none;
             cursor: pointer;
             font-size: 0.9em;
             width: 100%;
+            transition: all 0.3s;
         }
 
+        .buscador-container select:hover {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(243, 146, 0, 0.2);
+        }
+
+        .contador-juegos {
+            font-size: 0.85em;
+            color: var(--naranja);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Botón Proponer Juego con Animación */
         .btn-enviar {
-            white-space: nowrap; /* Evita que el texto se rompa */
+            white-space: nowrap;
             border: 2px solid var(--naranja);
             color: var(--naranja);
-            padding: 10px 20px;
+            padding: 12px 28px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 0.9em;
-            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-enviar:hover {
             background: var(--naranja);
             color: var(--azul-oscuro);
             transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(243, 146, 0, 0.4);
         }
         
+        /* Galería y Tarjetas con Efectos Gaming */
         #galeria { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 350px)); 
-            gap: 30px; 
-            max-width: 1200px; 
-            margin: 40px auto 0; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 360px)); 
+            gap: 35px; 
+            max-width: 1300px; 
+            margin: 50px auto; 
             justify-content: center;
         }
 
         .tarjeta { 
             background: var(--bg-tarjeta); 
             border: 1px solid var(--borde-tarjeta);
-            border-radius: 20px; 
-            padding: 20px; 
-            backdrop-filter: blur(10px);
+            border-radius: 24px; 
+            padding: 18px; 
+            backdrop-filter: blur(15px);
             text-align: left;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
-            height: 420px;
+            height: 440px;
+            position: relative;
+            overflow: hidden;
         }
 
+        /* Brillo al pasar el ratón */
         .tarjeta:hover { 
-            transform: translateY(-10px);
+            transform: translateY(-12px) scale(1.02);
             border-color: var(--naranja);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(243, 146, 0, 0.15);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .tarjeta img { 
             width: 100%; 
-            height: 180px; 
-            border-radius: 12px; 
+            height: 190px; 
+            border-radius: 16px; 
             object-fit: cover;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            transition: transform 0.5s ease;
+        }
+
+        .tarjeta:hover img {
+            transform: scale(1.03);
         }
         
-        .tarjeta h3 { color: var(--naranja); margin: 0 0 10px; font-size: 1.4em; }
-        .tarjeta p { color: #cbd5e1; font-size: 0.95em; flex-grow: 1; line-height: 1.5; }
+        .tarjeta h3 { 
+            color: var(--naranja); 
+            margin: 0 0 12px; 
+            font-size: 1.5em; 
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: -0.5px;
+        }
 
+        .tarjeta p { 
+            color: #cbd5e1; 
+            font-size: 0.95em; 
+            flex-grow: 1; 
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tarjeta p strong {
+            color: var(--blanco);
+            font-weight: 600;
+        }
+
+        /* Botón Jugar Modernizado */
         .boton { 
             background: var(--naranja); 
             color: var(--azul-oscuro); 
             text-decoration: none; 
-            padding: 14px; 
-            border-radius: 12px; 
-            font-weight: bold; 
+            padding: 15px; 
+            border-radius: 14px; 
+            font-weight: 800; 
             text-align: center;
-            transition: 0.3s;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
         }
 
-        .boton:hover { background: var(--naranja-hover); color: white; }
+        .boton:hover { 
+            background: white; 
+            color: var(--azul-profundo); 
+            box-shadow: 0 0 15px white;
+        }
 
-        /* Responsivo: Se apila en pantallas pequeñas */
-        @media (max-width: 850px) {
+        /* Animación de entrada para las tarjetas */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tarjeta-animada {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Responsivo */
+        @media (max-width: 900px) {
             .header-container {
                 flex-direction: column;
                 text-align: center;
+                padding-top: 20px;
             }
             .buscador-container {
-                width: 100%;
-                max-width: 100%;
+                width: 95%;
+            }
+            .logo-principal {
+                max-width: 220px;
             }
         }
     </style>
@@ -158,19 +242,22 @@
     <div class="header-container">
         <img src="auladejuegoslogo.png" alt="Aula de Juegos Logo" class="logo-principal">
 
-        <div class="buscador-container">
-            <select id="filtroAsignatura">
-                <option value="">Todas las Asignaturas</option>
-            </select>
-            <select id="filtroAutor">
-                <option value="">Todos los Autores</option>
-            </select>
+        <div class="buscador-wrapper">
+            <div id="contador" class="contador-juegos">Cargando arsenal...</div>
+            <div class="buscador-container">
+                <select id="filtroAsignatura">
+                    <option value="">Todas las Asignaturas</option>
+                </select>
+                <select id="filtroAutor">
+                    <option value="">Todos los Autores</option>
+                </select>
+            </div>
         </div>
 
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKjYpJG7aqgwj9SMhc9wKuxuaieokz27u_r1nzcjXfVqeowA/viewform?usp=sharing&ouid=105781798792806392011" target="_blank" class="btn-enviar">+ PROPONER UN JUEGO</a>
     </div>
 
-    <div id="galeria">Cargando misiones...</div>
+    <div id="galeria">Preparando misiones...</div>
 
     <script>
         const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
@@ -181,10 +268,15 @@
             header: true,
             complete: function(results) {
                 datosJuegos = results.data.filter(j => j.titulo && j.titulo.trim() !== "");
+                actualizarContador(datosJuegos.length);
                 poblarFiltros(datosJuegos);
                 mostrarJuegos(datosJuegos);
             }
         });
+
+        function actualizarContador(num) {
+            document.getElementById('contador').innerText = `Explorando ${num} misiones disponibles`;
+        }
 
         function poblarFiltros(juegos) {
             const asignaturas = [...new Set(juegos.map(j => j.asignatura))].sort();
@@ -200,20 +292,28 @@
         function mostrarJuegos(juegos) {
             const galeria = document.getElementById('galeria');
             galeria.innerHTML = '';
+            
             if(juegos.length === 0) {
-                galeria.innerHTML = '<p>No se encontraron juegos con esos filtros.</p>';
+                galeria.innerHTML = '<p style="grid-column: 1/-1; font-size: 1.2em; opacity: 0.7;">No hay misiones que coincidan con tus filtros.</p>';
                 return;
             }
-            juegos.forEach(juego => {
+
+            juegos.forEach((juego, index) => {
                 const m = juego.miniatura || "https://placehold.co/400x250/002d56/f39200?text=JUEGO";
-                galeria.innerHTML += `
-                    <div class="tarjeta">
-                        <img src="${m}" alt="${juego.titulo}">
-                        <h3>${juego.titulo}</h3>
-                        <p><strong>Asignatura:</strong> ${juego.asignatura}<br><strong>Por:</strong> ${juego.autor}</p>
-                        <a href="${juego.url}" class="boton" target="_blank">¡JUGAR AHORA!</a>
-                    </div>
+                const card = document.createElement('div');
+                card.className = 'tarjeta tarjeta-animada';
+                card.style.animationDelay = `${index * 0.1}s`; // Efecto de carga escalonada
+                
+                card.innerHTML = `
+                    <img src="${m}" alt="${juego.titulo}">
+                    <h3>${juego.titulo}</h3>
+                    <p>
+                        <strong>📚 ASIGNATURA:</strong> ${juego.asignatura}<br>
+                        <strong>✏️ AUTOR:</strong> ${juego.autor}
+                    </p>
+                    <a href="${juego.url}" class="boton" target="_blank">¡JUGAR AHORA!</a>
                 `;
+                galeria.appendChild(card);
             });
         }
 
@@ -226,6 +326,7 @@
                            (autoVal === "" || j.autor === autoVal);
                 });
                 mostrarJuegos(filtrados);
+                actualizarContador(filtrados.length);
             });
         });
     </script>
