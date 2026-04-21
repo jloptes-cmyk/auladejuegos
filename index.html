@@ -28,12 +28,37 @@
             min-height: 100vh;
         }
 
-        /* Cabecera y Glow del Logo */
+        /* Selector de Idioma */
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--naranja);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--naranja);
+            color: var(--azul-oscuro);
+            font-weight: bold;
+        }
+
         .header-container {
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            padding: 30px 2%;
+            padding: 50px 2% 30px;
             max-width: 1600px;
             margin: 0 auto;
             gap: 40px;
@@ -42,7 +67,6 @@
         .logo-principal {
             max-width: 280px;
             height: auto;
-            /* GLOW NARANJA INTENSO SOLICITADO */
             filter: drop-shadow(0 0 20px rgba(243, 146, 0, 0.6));
         }
 
@@ -70,9 +94,6 @@
             border: 1px solid var(--naranja);
             padding: 8px 12px;
             border-radius: 8px;
-            outline: none;
-            cursor: pointer;
-            font-size: 0.85em;
             width: 100%;
         }
 
@@ -81,10 +102,8 @@
             color: var(--naranja);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
         
-        /* Galería */
         #galeria { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(320px, 360px)); 
@@ -100,51 +119,18 @@
             border-radius: 24px; 
             padding: 18px; 
             backdrop-filter: blur(15px);
-            transition: all 0.4s ease;
             display: flex;
             flex-direction: column;
-            height: 520px; /* Ajustada para la nueva descripción */
+            height: 520px;
+            transition: 0.4s ease;
         }
 
-        .tarjeta:hover { 
-            transform: translateY(-12px);
-            border-color: var(--naranja);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-        }
+        .tarjeta:hover { transform: translateY(-12px); border-color: var(--naranja); }
 
-        .tarjeta img { 
-            width: 100%; 
-            height: 190px; 
-            border-radius: 16px; 
-            object-fit: cover;
-            margin-bottom: 18px;
-        }
-        
-        .tarjeta h3 { 
-            color: var(--naranja); 
-            margin: 0 0 10px; 
-            font-size: 1.3em; 
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .desc-breve {
-            font-style: italic;
-            color: #94a3b8;
-            font-size: 0.85em;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .datos-tecnicos { 
-            color: #cbd5e1; 
-            font-size: 0.85em; 
-            flex-grow: 1; 
-            line-height: 1.6;
-        }
-
+        .tarjeta img { width: 100%; height: 190px; border-radius: 16px; object-fit: cover; margin-bottom: 18px; }
+        .tarjeta h3 { color: var(--naranja); margin: 0 0 10px; font-size: 1.3em; font-family: 'Orbitron', sans-serif; }
+        .desc-breve { font-style: italic; color: #94a3b8; font-size: 0.85em; margin-bottom: 15px; height: 40px; overflow: hidden; }
+        .datos-tecnicos { color: #cbd5e1; font-size: 0.85em; flex-grow: 1; line-height: 1.6; }
         .datos-tecnicos strong { color: var(--blanco); font-size: 0.8em; }
 
         .boton { 
@@ -159,119 +145,143 @@
             text-transform: uppercase;
         }
 
-        .boton:hover { background: white; }
-
         @media (max-width: 950px) {
-            .header-container { flex-direction: column; text-align: center; }
+            .header-container { flex-direction: column; text-align: center; padding-top: 80px; }
             .buscador-container { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLanguage('es')">ES</button>
+        <button class="lang-btn" onclick="setLanguage('ca')">CA</button>
+    </div>
+
     <div class="header-container">
-        <img src="auladejuegoslogo.png" alt="Aula de Juegos Logo" class="logo-principal">
+        <img src="auladejuegoslogo.png" alt="Logo" class="logo-principal">
         <div class="buscador-wrapper">
-            <div id="contador" class="contador-juegos">Cargando misiones...</div>
+            <div id="contador" class="contador-juegos"></div>
             <div class="buscador-container">
-                <select id="filtroAsignatura">
-                    <option value="">Todas las Asignaturas</option>
-                </select>
-                <select id="filtroNivel">
-                    <option value="">Todos los Niveles</option>
-                </select>
-                <select id="filtroAutor">
-                    <option value="">Todos los Autores</option>
-                </select>
+                <select id="filtroAsignatura"><option value="" id="txt-all-asig"></option></select>
+                <select id="filtroNivel"><option value="" id="txt-all-niv"></option></select>
+                <select id="filtroAutor"><option value="" id="txt-all-aut"></option></select>
             </div>
         </div>
     </div>
 
-    <div id="galeria">Preparando misiones...</div>
+    <div id="galeria"></div>
 
     <script>
-        // URL de tu publicación CSV de Google Sheets
-        const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
+        const texts = {
+            es: {
+                allAsig: "Todas las Asignaturas",
+                allNiv: "Todos los Niveles",
+                allAut: "Todos los Autores",
+                count: "misiones disponibles",
+                play: "¡JUGAR AHORA!",
+                labelAsig: "📚 ASIGNATURA:",
+                labelNiv: "🎮 NIVEL:",
+                labelAut: "✏️ AUTOR:",
+                loading: "Cargando misiones..."
+            },
+            ca: {
+                allAsig: "Totes les Assignatures",
+                allNiv: "Tots els Nivells",
+                allAut: "Tots els Autors",
+                count: "missions disponibles",
+                play: "¡JUGAR ARA!",
+                labelAsig: "📚 ASSIGNATURA:",
+                labelNiv: "🎮 NIVELL:",
+                labelAut: "✏️ AUTOR:",
+                loading: "Carregant missions..."
+            }
+        };
+
+        let currentLang = localStorage.getItem('prefLang') || 'es';
         let datosJuegos = [];
+        const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('prefLang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.innerText.toLowerCase() === lang));
+            updateStaticTexts();
+            mostrarJuegos(filtrarDatos());
+        }
+
+        function updateStaticTexts() {
+            const t = texts[currentLang];
+            document.getElementById('txt-all-asig').innerText = t.allAsig;
+            document.getElementById('txt-all-niv').innerText = t.allNiv;
+            document.getElementById('txt-all-aut').innerText = t.allAut;
+            actualizarContador(filtrarDatos().length);
+        }
+
+        function filtrarDatos() {
+            const asigVal = document.getElementById('filtroAsignatura').value;
+            const nivelVal = document.getElementById('filtroNivel').value;
+            const autoVal = document.getElementById('filtroAutor').value;
+            return datosJuegos.filter(j => 
+                (asigVal === "" || j["Asignatura"] === asigVal) &&
+                (nivelVal === "" || j["Nivel"] === nivelVal) &&
+                (autoVal === "" || j["Autor"] === autoVal)
+            );
+        }
 
         Papa.parse(public_url, {
             download: true,
             header: true,
             complete: function(results) {
-                // Filtramos por el nuevo campo "Título"
                 datosJuegos = results.data.filter(j => j["Título"] && j["Título"].trim() !== "");
-                actualizarContador(datosJuegos.length);
                 poblarFiltros(datosJuegos);
-                mostrarJuegos(datosJuegos);
+                setLanguage(currentLang);
             }
         });
 
-        function actualizarContador(num) {
-            document.getElementById('contador').innerText = `${num} misiones disponibles`;
-        }
-
         function poblarFiltros(juegos) {
-            // Usamos los nombres exactos del formulario para los filtros
-            const asignaturas = [...new Set(juegos.map(j => j["Asignatura"]))].filter(Boolean).sort();
-            const niveles = [...new Set(juegos.map(j => j["Nivel"]))].filter(Boolean).sort();
-            const autores = [...new Set(juegos.map(j => j["Autor"]))].filter(Boolean).sort();
-
-            const selectAsig = document.getElementById('filtroAsignatura');
-            const selectNivel = document.getElementById('filtroNivel');
-            const selectAuto = document.getElementById('filtroAutor');
-
-            asignaturas.forEach(a => selectAsig.innerHTML += `<option value="${a}">${a}</option>`);
-            niveles.forEach(n => selectNivel.innerHTML += `<option value="${n}">${n}</option>`);
-            autores.forEach(a => selectAuto.innerHTML += `<option value="${a}">${a}</option>`);
+            const createOptions = (id, key) => {
+                const select = document.getElementById(id);
+                [...new Set(juegos.map(j => j[key]))].filter(Boolean).sort().forEach(val => {
+                    select.innerHTML += `<option value="${val}">${val}</option>`;
+                });
+            };
+            createOptions('filtroAsignatura', 'Asignatura');
+            createOptions('filtroNivel', 'Nivel');
+            createOptions('filtroAutor', 'Autor');
         }
 
         function mostrarJuegos(juegos) {
             const galeria = document.getElementById('galeria');
+            const t = texts[currentLang];
             galeria.innerHTML = '';
-            
-            juegos.forEach((juego, index) => {
-                // Mapeo de campos exactos del formulario
-                const titulo = juego["Título"];
-                const desc = juego["Descripción breve"] || "Explora esta nueva misión educativa.";
-                const autor = juego["Autor"];
-                const asignatura = juego["Asignatura"];
-                const nivel = juego["Nivel"] || "General";
-                const urlJuego = juego["url del juego"];
-                const urlMiniatura = juego["url de miniatura"] || "https://placehold.co/400x250/002d56/f39200?text=AULA+DE+JUEGOS";
-                
+            juegos.forEach(juego => {
                 const card = document.createElement('div');
                 card.className = 'tarjeta';
                 card.innerHTML = `
-                    <img src="${urlMiniatura}" alt="${titulo}">
-                    <h3>${titulo}</h3>
-                    <p class="desc-breve">${desc}</p>
+                    <img src="${juego["url de miniatura"] || 'https://placehold.co/400x250/002d56/f39200?text=JUEGO'}" alt="img">
+                    <h3>${juego["Título"]}</h3>
+                    <p class="desc-breve">${juego["Descripción breve"] || ""}</p>
                     <p class="datos-tecnicos">
-                        <strong>📚 ASIGNATURA:</strong> ${asignatura}<br>
-                        <strong>🎮 NIVEL:</strong> ${nivel}<br>
-                        <strong>✏️ AUTOR:</strong> ${autor}
+                        <strong>${t.labelAsig}</strong> ${juego["Asignatura"]}<br>
+                        <strong>${t.labelNiv}</strong> ${juego["Nivel"] || "General"}<br>
+                        <strong>${t.labelAut}</strong> ${juego["Autor"]}
                     </p>
-                    <a href="${urlJuego}" class="boton" target="_blank">¡JUGAR AHORA!</a>
+                    <a href="${juego["url del juego"]}" class="boton" target="_blank">${t.play}</a>
                 `;
                 galeria.appendChild(card);
             });
         }
 
-        // Lógica de filtrado
-        document.querySelectorAll('select').forEach(select => {
-            select.addEventListener('change', () => {
-                const asigVal = document.getElementById('filtroAsignatura').value;
-                const nivelVal = document.getElementById('filtroNivel').value;
-                const autoVal = document.getElementById('filtroAutor').value;
+        function actualizarContador(num) {
+            document.getElementById('contador').innerText = `${num} ${texts[currentLang].count}`;
+        }
 
-                const filtrados = datosJuegos.filter(j => {
-                    return (asigVal === "" || j["Asignatura"] === asigVal) &&
-                           (nivelVal === "" || j["Nivel"] === nivelVal) &&
-                           (autoVal === "" || j["Autor"] === autoVal);
-                });
-                mostrarJuegos(filtrados);
-                actualizarContador(filtrados.length);
-            });
-        });
+        document.querySelectorAll('select').forEach(s => s.addEventListener('change', () => {
+            const filtrados = filtrarDatos();
+            mostrarJuegos(filtrados);
+            actualizarContador(filtrados.length);
+        }));
     </script>
 </body>
 </html>
