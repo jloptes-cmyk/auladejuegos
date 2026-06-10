@@ -201,7 +201,9 @@
 
         let currentLang = localStorage.getItem('prefLang') || 'es';
         let datosJuegos = [];
+        let likesJuegos = {};
         const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
+        const likes_api_url = 'https://script.google.com/macros/s/AKfycbwxb_cVwoihZtkEfG3TzXfMXWfdBDttUqhzCpU5fiHL9R-4jEmZG5Urd2naVlBgjuHPsQ/exec';
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -218,6 +220,20 @@
             document.getElementById('txt-all-aut').innerText = t.allAut;
             actualizarContador(filtrarDatos().length);
         }
+        async function cargarLikes() {
+    try {
+        const respuesta = await fetch(`${likes_api_url}?action=getLikes`);
+        const datos = await respuesta.json();
+
+        if (datos.success) {
+            likesJuegos = datos.likes || {};
+        } else {
+            console.error('Error al cargar los likes:', datos.error);
+        }
+    } catch (error) {
+        console.error('No se han podido cargar los likes:', error);
+    }
+}
 
         function filtrarDatos() {
             const asigVal = document.getElementById('filtroAsignatura').value;
@@ -231,14 +247,15 @@
         }
 
         Papa.parse(public_url, {
-            download: true,
-            header: true,
-            complete: function(results) {
-                datosJuegos = results.data.filter(j => j["Título"] && j["Título"].trim() !== "");
-                poblarFiltros(datosJuegos);
-                setLanguage(currentLang);
-            }
-        });
+    download: true,
+    header: true,
+    complete: async function(results) {
+        datosJuegos = results.data.filter(j => j["Título"] && j["Título"].trim() !== "");
+        await cargarLikes();
+        poblarFiltros(datosJuegos);
+        setLanguage(currentLang);
+    }
+});
 
         function poblarFiltros(juegos) {
             const createOptions = (id, key) => {
