@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula de Juegos | Misiones Educativas</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        :root {
+            --azul-oscuro: #001a33;
+            --azul-profundo: #000d1a;
+            --naranja: #f39200;
+            --naranja-hover: #d68100;
+            --blanco: #ffffff;
+            --bg-degradado: radial-gradient(circle at center, #002d56 0%, #000d1a 100%);
+            --bg-tarjeta: rgba(255, 255, 255, 0.05);
+            --borde-tarjeta: rgba(243, 146, 0, 0.15);
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg-degradado); 
+            background-attachment: fixed;
+            color: var(--blanco);
+            margin: 0; 
+            padding: 10px 20px; 
+            min-height: 100vh;
+        }
+
+        /* Selector de Idioma */
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--naranja);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--naranja);
+            color: var(--azul-oscuro);
+            font-weight: bold;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 50px 2% 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 40px;
+        }
+
+        .logo-principal {
+            max-width: 280px;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(243, 146, 0, 0.6));
+        }
+
+        .buscador-wrapper {
+            flex-grow: 1;
+            max-width: 750px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .buscador-container {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 15px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .buscador-container select {
+            background: var(--azul-oscuro);
+            color: white;
+            border: 1px solid var(--naranja);
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .contador-juegos {
+            font-size: 0.8em;
+            color: var(--naranja);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        #galeria { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 360px)); 
+            gap: 35px; 
+            max-width: 1300px; 
+            margin: 40px auto; 
+            justify-content: center;
+        }
+
+        .tarjeta { 
+            background: var(--bg-tarjeta); 
+            border: 1px solid var(--borde-tarjeta);
+            border-radius: 24px; 
+            padding: 18px; 
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            height: 520px;
+            transition: 0.4s ease;
+        }
+
+        .tarjeta:hover { transform: translateY(-12px); border-color: var(--naranja); }
+
+        .tarjeta img { width: 100%; height: 190px; border-radius: 16px; object-fit: cover; margin-bottom: 18px; }
+        .tarjeta h3 { color: var(--naranja); margin: 0 0 10px; font-size: 1.3em; font-family: 'Orbitron', sans-serif; }
+        .desc-breve { font-style: italic; color: #94a3b8; font-size: 0.70em; margin-bottom: 15px; height: 40px; overflow: hidden; }
+        .datos-tecnicos { color: #cbd5e1; font-size: 0.85em; flex-grow: 1; line-height: 1.6; }
+        .datos-tecnicos strong { color: var(--blanco); font-size: 0.8em; }
+
+        .like-button {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin: 0 0 12px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .like-button .like-heart {
+            color: var(--naranja);
+            font-size: 1.45em;
+            line-height: 1;
+            transition: transform 0.2s ease;
+        }
+
+        .like-button.liked .like-heart {
+            color: #ff4d67;
+        }
+
+        .like-button:hover .like-heart {
+            transform: scale(1.12);
+        }
+
+        .like-button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .boton { 
+            background: var(--naranja); 
+            color: var(--azul-oscuro); 
+            text-decoration: none; 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 950px) {
+            .header-container { flex-direction: column; text-align: center; padding-top: 80px; }
+            .buscador-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLanguage('es')">ES</button>
+        <button class="lang-btn" onclick="setLanguage('ca')">CA</button>
+    </div>
+
+    <div class="header-container">
+        <img src="auladejuegoslogo.png" alt="Logo" class="logo-principal">
+        <div class="buscador-wrapper">
+            <div id="contador" class="contador-juegos"></div>
+            <div class="buscador-container">
+                <select id="filtroAsignatura"><option value="" id="txt-all-asig"></option></select>
+                <select id="filtroNivel"><option value="" id="txt-all-niv"></option></select>
+                <select id="filtroAutor"><option value="" id="txt-all-aut"></option></select>
+            </div>
+        </div>
+    </div>
+
+    <div id="galeria"></div>
+
+    <script>
+        const texts = {
+            es: {
+                allAsig: "Todas las Asignaturas",
+                allNiv: "Todos los Niveles",
+                allAut: "Todos los Autores",
+                count: "misiones disponibles",
+                play: "¡JUGAR AHORA!",
+                labelAsig: "📚 ASIGNATURA:",
+                labelNiv: "🎮 NIVEL:",
+                labelAut: "✏️ AUTOR:",
+                loading: "Cargando misiones...",
+                like: "Me gusta",
+                likes: "Me gusta"
+            },
+            ca: {
+                allAsig: "Totes les Assignatures",
+                allNiv: "Tots els Nivells",
+                allAut: "Tots els Autors",
+                count: "missions disponibles",
+                play: "¡JUGAR ARA!",
+                labelAsig: "📚 ASSIGNATURA:",
+                labelNiv: "🎮 NIVELL:",
+                labelAut: "✏️ AUTOR:",
+                loading: "Carregant missions...",
+                like: "M'agrada",
+                likes: "M'agrada"
+            }
+        };
+
+        let currentLang = localStorage.getItem('prefLang') || 'es';
+        let datosJuegos = [];
+        let likesJuegos = {};
+        const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUMXESTy3X_mpYu46HYSRiFgGj2WT0Cc4beQDz7PB2AS3JvnrKUXN4oEYq2oNKcd89B31hruGPyj5u/pub?output=csv';
+        const likes_api_url = 'https://script.google.com/macros/s/AKfycbwxb_cVwoihZtkEfG3TzXfMXWfdBDttUqhzCpU5fiHL9R-4jEmZG5Urd2naVlBgjuHPsQ/exec';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('prefLang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.innerText.toLowerCase() === lang));
+            updateStaticTexts();
+            mostrarJuegos(filtrarDatos());
+        }
+
+        function updateStaticTexts() {
+            const t = texts[currentLang];
+            document.getElementById('txt-all-asig').innerText = t.allAsig;
+            document.getElementById('txt-all-niv').innerText = t.allNiv;
+            document.getElementById('txt-all-aut').innerText = t.allAut;
+            actualizarContador(filtrarDatos().length);
+        }
+
+        async function cargarLikes() {
+            try {
+                const respuesta = await fetch(`${likes_api_url}?action=getLikes`);
+                const datos = await respuesta.json();
+
+                if (datos.success) {
+                    likesJuegos = datos.likes || {};
+                } else {
+                    console.error('Error al cargar los likes:', datos.error);
+                }
+            } catch (error) {
+                console.error('No se han podido cargar los likes:', error);
+            }
+        }
+
+        function usuarioHaDadoLike(gameId) {
+            return localStorage.getItem(`auladejuegos_like_${gameId}`) === 'true';
+        }
+
+        async function alternarLike(gameId, boton) {
+            if (!gameId || boton.disabled) return;
+
+            const estabaMarcado = usuarioHaDadoLike(gameId);
+            const operation = estabaMarcado ? 'remove' : 'add';
+            boton.disabled = true;
+
+            try {
+                const respuesta = await fetch(likes_api_url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateLike',
+                        gameId: gameId,
+                        operation: operation
+                    })
+                });
+
+                const datos = await respuesta.json();
+
+                if (!datos.success) {
+                    throw new Error(datos.error || 'No se ha podido actualizar el like.');
+                }
+
+                likesJuegos[gameId] = datos.likes;
+
+                if (operation === 'add') {
+                    localStorage.setItem(`auladejuegos_like_${gameId}`, 'true');
+                } else {
+                    localStorage.removeItem(`auladejuegos_like_${gameId}`);
+                }
+
+                actualizarBotonLike(boton, gameId);
+            } catch (error) {
+                console.error('No se ha podido actualizar el like:', error);
+            } finally {
+                boton.disabled = false;
+            }
+        }
+
+        function actualizarBotonLike(boton, gameId) {
+            const marcado = usuarioHaDadoLike(gameId);
+            const cantidad = Number(likesJuegos[gameId]) || 0;
+            const textoLike = cantidad === 1 ? texts[currentLang].like : texts[currentLang].likes;
+
+            boton.classList.toggle('liked', marcado);
+            boton.setAttribute('aria-pressed', marcado ? 'true' : 'false');
+            boton.innerHTML = `
+                <span class="like-heart" aria-hidden="true">${marcado ? '♥' : '♡'}</span>
+                <span>${cantidad} ${textoLike}</span>
+            `;
+        }
+
+        function filtrarDatos() {
+            const asigVal = document.getElementById('filtroAsignatura').value;
+            const nivelVal = document.getElementById('filtroNivel').value;
+            const autoVal = document.getElementById('filtroAutor').value;
+            return datosJuegos.filter(j => 
+                (asigVal === "" || j["Asignatura"] === asigVal) &&
+                (nivelVal === "" || j["Nivel"] === nivelVal) &&
+                (autoVal === "" || j["Autor"] === autoVal)
+            );
+        }
+
+        Papa.parse(public_url, {
+            download: true,
+            header: true,
+            complete: async function(results) {
+                datosJuegos = results.data.filter(j => j["Título"] && j["Título"].trim() !== "");
+                await cargarLikes();
+                poblarFiltros(datosJuegos);
+                setLanguage(currentLang);
+            }
+        });
+
+        function poblarFiltros(juegos) {
+            const createOptions = (id, key) => {
+                const select = document.getElementById(id);
+                [...new Set(juegos.map(j => j[key]))].filter(Boolean).sort().forEach(val => {
+                    select.innerHTML += `<option value="${val}">${val}</option>`;
+                });
+            };
+            createOptions('filtroAsignatura', 'Asignatura');
+            createOptions('filtroNivel', 'Nivel');
+            createOptions('filtroAutor', 'Autor');
+        }
+
+        function mostrarJuegos(juegos) {
+            const galeria = document.getElementById('galeria');
+            const t = texts[currentLang];
+            galeria.innerHTML = '';
+            juegos.forEach(juego => {
+                const card = document.createElement('div');
+                card.className = 'tarjeta';
+                card.innerHTML = `
+                    <img src="${juego["url de miniatura"] || 'https://placehold.co/400x250/002d56/f39200?text=JUEGO'}" alt="img">
+                    <h3>${juego["Título"]}</h3>
+                    <p class="desc-breve">${juego["Descripción breve"] || ""}</p>
+                    <p class="datos-tecnicos">
+                        <strong>${t.labelAsig}</strong> ${juego["Asignatura"]}<br>
+                        <strong>${t.labelNiv}</strong> ${juego["Nivel"] || "General"}<br>
+                        <strong>${t.labelAut}</strong> ${juego["Autor"]}
+                    </p>
+                    <button type="button" class="like-button" aria-pressed="false"></button>
+                    <a href="${juego["url del juego"]}" class="boton" target="_blank">${t.play}</a>
+                `;
+
+                const gameId = String(juego["ID"] || '').trim();
+                const likeButton = card.querySelector('.like-button');
+
+                if (gameId) {
+                    actualizarBotonLike(likeButton, gameId);
+                    likeButton.addEventListener('click', () => alternarLike(gameId, likeButton));
+                } else {
+                    likeButton.style.display = 'none';
+                }
+
+                galeria.appendChild(card);
+            });
+        }
+
+        function actualizarContador(num) {
+            document.getElementById('contador').innerText = `${num} ${texts[currentLang].count}`;
+        }
+
+        document.querySelectorAll('select').forEach(s => s.addEventListener('change', () => {
+            const filtrados = filtrarDatos();
+            mostrarJuegos(filtrados);
+            actualizarContador(filtrados.length);
+        }));
+    </script>
+</body>
+</html>
